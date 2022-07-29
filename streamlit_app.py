@@ -46,7 +46,6 @@ except URLError as e:
   streamlit.error()    
     
     
-    
 streamlit.write('The user entered ', fruit_choice)
 
 #import requests
@@ -85,11 +84,22 @@ streamlit.stop()
 #my_data_rows = my_cur.fetchall()
 #streamlit.dataframe(my_data_rows)
 
-fruit_to_add = streamlit.text_input('What fruit would you like to add?','jackfruit')
-streamlit.write('Thanks for adding ', fruit_to_add)
+#allow the end user to add a fruit to the list
+def inser_row_snowflake(new_fruit):
+  with my_cnx.cursor() as my_cur:
+    my_cur.execute("insert into fruit_load_list values ('from streamlit')")
+    return "Thanks for adding " + new_fruit
+
+add_my_fruit = streamlit.text_input('What fruit would you like to add?')
+if streamlit.burron('Add a Fruit to the List'):
+  my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
+  back_from_function = insert_row_snowflake(add_my_fruit)
+  streamlit.text(back_from_function)
+  
+#streamlit.write('Thanks for adding ', fruit_to_add)
 
 # this will not work correctly, but just go with it for now
 
-my_cur.execute("insert into fruit_load_list values ('from streamlit')")
+
 
 
